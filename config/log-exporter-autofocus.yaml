@@ -1,0 +1,48 @@
+# This is a single-line json file, but we're hacking it in as a "log" file.
+common_labels:
+  filter:
+    regex: '.*"Filter":[ ]*"([^"]+)".*'
+  method:
+    regex: '.*"Method":[ ]*"([^"]+)".*'
+  fitting:
+    regex: '.*"Fitting":[ ]*"([^"]+)".*'
+  backlash_compensation:
+    regex: '.*"BacklashCompensationModel":[ ]*"([^"]+)".*'
+  backlash_in:
+    regex: '.*"BacklashIN":[ ]*([0-9]+).*'
+  backlast_out:
+    regex: '.*"BacklashOUT":[ ]*([0-9]+).*'
+metrics:
+- labels:
+    type:
+      value: "quadratic"
+  name: nina_autofocus_rsquares
+  rules:
+  - op: set
+    regex: '.*"Quadratic":[ ]*([0-9.]+).*'
+  type: gauge
+
+- labels:
+    type:
+      value: "Hyperbolic"
+  name: nina_autofocus_rsquares
+  rules:
+  - op: set
+    regex: '.*"Hyperbolic":[ ]*([0-9.]+).*'
+  type: gauge
+- labels:
+    type:
+      value: "left_trend"
+  name: nina_autofocus_rsquares
+  rules:
+  - op: set
+    regex: '.*"LeftTrend":[ ]*([0-9.]+).*'
+  type: gauge
+- labels:
+    type:
+      value: "right_trend"
+  name: nina_autofocus_rsquares
+  rules:
+  - op: set
+    regex: '.*"RightTrend":[ ]*([0-9.]+).*'
+  type: gauge

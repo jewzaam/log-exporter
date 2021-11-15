@@ -1,0 +1,150 @@
+common_labels:
+  profile:
+    regex: ^Equipment Profile = (.+)
+metrics:
+- labels:
+    type:
+      value: "all"
+  name: phd2_total
+  rules:
+  - op: inc
+    regex: .*
+  type: counter
+- labels:
+    type:
+      value: "star_lost"
+  name: phd2_total
+  rules:
+  - op: inc
+    regex: .*Star lost.*
+  type: counter
+- labels:
+    binning:
+      regex: .*, Binning = ([^,]+),.*
+    camera:
+      regex: .*Camera = ([^,]+),.*
+    dither:
+      regex: .*Dither = ([^,]+),.*
+    dither_scale:
+      regex: .*Dither scale = ([^,]+),.*
+    exposure_ms:
+      regex: ^Exposure = ([^,]+)$
+    focal_length:
+      regex: .*, Focal length = ([^,]+)$
+    full_size:
+      regex: .*, full size = ([^,]+),.*
+    gain:
+      regex: .*, gain = ([^,]+),.*
+    noise_reduction:
+      regex: .*Image noise reduction = ([^,]+),.*
+    pixel_scale:
+      regex: ^Pixel scale = ([^,]+),.*
+    search_region:
+      regex: ^Search region = ([^,]+),.*
+    star_mass_tolerance:
+      regex: .*, Star mass tolerance = ([^,]+)$
+    version:
+      regex: ^PHD2 version ([^ ]+) .*
+  name: phd2_profile
+  rules:
+  - op: set
+    value: 1
+  type: gauge
+- labels:
+    status:
+      value: Guiding
+  name: phd2_status
+  rules:
+  - op: set
+    regex: ^Guiding Ends.*
+    value: 0
+  - op: set
+    regex: ^Guiding Begins.*
+    value: 1
+  type: gauge
+- labels:
+    status:
+      value: Dithering
+  name: phd2_status
+  rules:
+  - op: set
+    regex: '^INFO: DITHER by.*'
+    value: 1
+  - op: set
+    regex: '^INFO: SETTLING STATE CHANGE, Settling complete$'
+    value: 0
+  - op: set
+    regex: '^INFO: SETTLING STATE CHANGE, Settling failed$'
+    value: 0
+  type: gauge
+- labels:
+    status:
+      value: Settling
+  name: phd2_status
+  rules:
+  - op: set
+    regex: '^INFO: SETTLING STATE CHANGE, Settling started$'
+    value: 1
+  - op: set
+    regex: '^INFO: SETTLING STATE CHANGE, Settling complete$'
+    value: 0
+  - op: set
+    regex: '^INFO: SETTLING STATE CHANGE, Settling failed$'
+    value: 0
+  type: gauge
+- labels:
+    direction:
+      regex: ^[0-9]*,.*,[0-9]*,([NS]),.*
+  name: phd2_pulse
+  rules:
+  - op: add
+    regex: ^[0-9]*,.*,([0-9]+),[NS],.*
+  type: gauge
+- labels:
+    direction:
+      regex: ^[0-9]*,.*,[0-9]*,([WE]),.*
+  name: phd2_pulse
+  rules:
+  - op: add
+    regex: ^[0-9]*,.*,([0-9]+),[WE],.*
+  type: gauge
+- labels:
+    axis:
+      value: x
+  name: phd2_drift
+  rules:
+  - op: set
+    regex: ^[0-9]*,[^,]*,[^,]*,([^,]+),.*
+  type: gauge
+- labels:
+    axis:
+      value: y
+  name: phd2_drift
+  rules:
+  - op: set
+    regex: ^[0-9]*,[^,]*,[^,]*,[^,]*,([^,]+),.*
+  type: gauge
+- labels:
+    data:
+      value: starmass
+  name: phd2_info
+  rules:
+  - op: set
+    regex: ^[0-9]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,([^,]+),.*
+  type: gauge
+- labels:
+    data:
+      value: snr
+  name: phd2_info
+  rules:
+  - op: set
+    regex: ^[0-9]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,([^,]+),.*
+  type: gauge
+- labels:
+    data:
+      value: errorcode
+  name: phd2_info
+  rules:
+  - op: set
+    regex: ^[0-9]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,[^,]*,([^,]+),.*
+  type: gauge

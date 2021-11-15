@@ -1,0 +1,387 @@
+common_labels:
+  camera:
+    regex: ".*Successfully connected Camera. Id: (.+) Name:.*"
+initialize:
+- metric: nina_status{category="Utility",item="MessageBox"}
+  type: gauge
+  value: 0
+- metric: nina_status{category="Polar Alignment",item="PolarAlignment"}
+  type: gauge
+  value: 0
+- metric: nina_status{category="Telescope",item="MeridianFlip"}
+  type: gauge
+  value: 0
+metrics:
+- name: nina_total
+  rules:
+  - op: inc
+    regex: .*
+  type: counter
+- labels:
+    type:
+      regex: .*[|]Successfully connected ([^.]+)[.].*
+  name: nina_equipment
+  rules:
+  - op: set
+    regex: ^.*Successfully connected.*
+    value: 1
+  type: gauge
+- labels:
+    type:
+      regex: .*[|]Disconnected (.+)$
+  name: nina_equipment
+  rules:
+  - op: set
+    regex: .*[|]Disconnected .*
+    value: 0
+  type: gauge
+- labels:
+    category:
+      regex: ".*(?:Starting|Skipped|Finishing) Category: ([^,]+),.*"
+    item:
+      regex: ".*(?:Starting|Skipped|Finishing) Category: [^,]+, Item: ([^,]+)"
+  name: nina_status
+  rules:
+  - op: set
+    regex: .*[|]Run[|].*Starting Category.*
+    value: 1
+  type: gauge
+- labels:
+    category:
+      regex: ".*(?:Starting|Skipped|Finishing) Category: ([^,]+),.*"
+    item:
+      regex: ".*(?:Starting|Skipped|Finishing) Category: [^,]+, Item: ([^,]+)"
+  name: nina_status
+  rules:
+  - op: set
+    regex: .*[|]Run[|].*Finishing Category.*
+    value: 0
+  type: gauge
+- labels:
+    category:
+      regex: ".*(?:Starting|Skipped|Finishing) Category: ([^,]+),.*"
+    item:
+      regex: ".*(?:Starting|Skipped|Finishing) Category: [^,]+, Item: ([^,]+)"
+  name: nina_status
+  rules:
+  - op: set
+    regex: .*[|]Run[|].*Skipped Category.*
+    value: 0
+  type: gauge
+# ZWO focuser sometimes reports 0K temperature (as -273C) and just needs reconnected. 
+# If noticed after sequence starts it will trigger autofocus based on temperature which is just a chunk of time lost.
+# Worst case it's missed AND FOCUS NEVER HAPPENS.
+#2021-08-27T21:10:50.8207|INFO|FocuserMediator.cs|BroadcastSuccessfulAutoFocusRun|44|Autofocus notification received - Temperature -273
+- labels:
+    category:
+      value: "Focuser"
+    item:
+      value: "Temperature"
+  name: nina_status
+  rules:
+  - op: set
+    regex: ".*Autofocus notification received - Temperature (.*)$"
+  type: gauge
+# Failure to AutoFocus.
+# 2021-11-10T04:19:56.3773|WARNING|AutoFocusVM.cs|StartAutoFocus|721|AutoFocus did not complete successfully, so restoring the focuser position to 12561
+# 2021-11-10T04:19:59.9242|ERROR|SequenceItem.cs|Run|222|Category: Focuser, Item: RunAutofocus - 
+# NINA.Core.Model.SequenceEntityFailedException: Sequence entity did not successfully run!
+#    at NINA.Sequencer.SequenceItem.Autofocus.RunAutofocus.<Execute>d__17.MoveNext() in E:\Projects\nina\NINA.Sequencer\SequenceItem\Autofocus\RunAutofocus.cs:line 94
+# --- End of stack trace from previous location where exception was thrown ---
+#    at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+#    at NINA.Sequencer.SequenceItem.SequenceItem.<Run>d__64.MoveNext() in E:\Projects\nina\NINA.Sequencer\SequenceItem\SequenceItem.cs:line 213
+- labels:
+    module:
+      value: "Focuser"
+    type:
+      value: "RunAutofocus"
+    code:
+      value: "Restoring"
+  name: nina_error
+  rules:
+  - op: inc
+    regex: ".*ERROR.*Category: Focuser, Item: RunAutofocus.*"
+  type: counter
+# Failure to save image.
+# 2021-08-27T21:44:19.9511|ERROR|SequenceItem.cs|Run|222|Category: Camera, Item: TakeExposure.*
+- labels:
+    module:
+      value: "Camera"
+    type:
+      value: "TakeExposure"
+    code:
+      value: "Continuing"
+  name: nina_error
+  rules:
+  - op: inc
+    regex: ".*ERROR.*Category: Camera, Item: TakeExposure.*"
+  type: counter
+# Clear metrics like TakeExposure when interrupted
+# 2021-10-21T06:04:23.5454|INFO|SunAltitudeCondition.cs|InterruptWhenSunOutsideOfBounds|58|Sun is outside of the specified range - Interrupting current Instruction Set
+# 2021-10-21T02:35:04.5480|INFO|LoopWhileNextTargetBelowAltitude.cs|InterruptWhenTargetBelowAltitude|48|Next Target is above altitude - Interrupting current Instruction Set
+# 2021-10-20T23:40:46.7027|INFO|AltitudeCondition.cs|InterruptWhenTargetBelowAltitude|59|Target is below altitude - Interrupting current Instruction Set
+- labels:
+    category:
+      regex: ".*InterruptWhen.*"
+      value: "Camera"
+    item:
+      value: "TakeExposure"
+  name: nina_status
+  rules:
+  - op: set
+    regex: ".*InterruptWhen.*"
+    value: 0
+  type: gauge
+# Special cases, Center to clear CenterAndRotate and visa versa
+- labels:
+    category:
+      regex: ".*(?:Starting|Finishing) Category: ([^,]+),.*"
+    item:
+      value: CenterAndRotate
+  name: nina_status
+  rules:
+  - op: set
+    regex: ".*[|]Run[|].*Finishing Category.*Item: Center.*"
+    value: 0
+  type: gauge
+- labels:
+    category:
+      regex: ".*(?:Starting|Finishing) Category: ([^,]+),.*"
+    item:
+      value: Center
+  name: nina_status
+  rules:
+  - op: set
+    regex: ".*[|]Run[|].*Finishing Category.*Item: Center.*"
+    value: 0
+  type: gauge
+- labels:
+    time:
+      regex: ".*Exposure Time:? ([^;]*);"
+    filter:
+      regex: ".*Filter:? ([^;]*);"
+    gain:
+      regex: ".*Gain:? ([^;]*);"
+    offset:
+      regex: ".*Offset:? ([^;]*);"
+    binning:
+      regex: ".*Binning:? ([^;]*);"
+  name: nina_exposure
+  rules:
+  - op: inc
+    regex: .*[|]Capture[|].*Starting Exposure.*
+  type: counter
+- labels:
+    type:
+      value: HFR
+  name: nina_detect
+  rules:
+  - op: set
+    regex: ".*[|]Detect[|].*Average HFR: ([^,]+),.*"
+  type: gauge
+- labels:
+    type:
+      value: stars
+  name: nina_detect
+  rules:
+  - op: set
+    regex: .*[|]Detect[|].*Detected Stars ([0-9]+)$
+  type: gauge
+- labels:
+    type:
+      value: RMSARCSEC
+  name: nina_detect
+  rules:
+  - op: set
+    regex: ".*[|]FinalizeSave[|].*RMS[A-Z]*_([0-9.]+)_.*"
+  type: gauge
+- labels:
+    category:
+      value: "Telescope"
+    item:
+      value: "MeridianFlip"
+  name: nina_status
+  rules:
+  - op: set
+    regex: ".*Meridian Flip - Initializing Meridian Flip.*"
+    value: 1
+  type: gauge
+- labels:
+    category:
+      value: "Telescope"
+    item:
+      value: "MeridianFlip"
+  name: nina_status
+  rules:
+  - op: set
+    regex: ".*Meridian Flip - Resuming Autoguider.*"
+    value: 0
+  type: gauge
+- labels:
+    module:
+      regex: .*[|]ERROR[|]([^|]+)[|].*
+    type:
+      regex: .*[|]ERROR[|][^|]+[|]([^|]+)[|].*
+    code:
+      regex: .*[|]ERROR[|].* ([^ ]+)$
+  name: nina_error
+  rules:
+  - op: inc
+    regex: .*[|]ERROR[|].*
+  type: counter
+- labels:
+    module:
+      regex: .*[|]ERROR[|]([^|]+)[|].*
+    type:
+      regex: .*[|]ERROR[|][^|]+[|]([^|]+)[|].*
+    code:
+      regex: .*[|]ERROR[|].* ([^ ]+)$
+  name: nina_error
+  rules:
+  - op: inc
+    regex: .*[|]ERROR[|].*
+  type: counter
+# clear status gauges of importance when sequence is cancelled
+- labels:
+    category:
+      value: "* Instruction Set *"
+    item:
+      value: "Center"
+  name: nina_status
+  rules:
+  - op: set
+    regex: ".*Sequence run was cancelled.*"
+    value: 0
+  type: gauge
+- labels:
+    category:
+      value: "* Instruction Set *"
+    item:
+      value: "CenterAndRotate"
+  name: nina_status
+  rules:
+  - op: set
+    regex: ".*Sequence run was cancelled.*"
+    value: 0
+  type: gauge
+- labels:
+    category:
+      value: "* Instruction Set *"
+    item:
+      value: "NINA.Sequencer.Container.DeepSkyObjectContainer"
+  name: nina_status
+  rules:
+  - op: set
+    regex: ".*Sequence run was cancelled.*"
+    value: 0
+  type: gauge
+- labels:
+    category:
+      value: "* Instruction Set *"
+    item:
+      value: "NINA.Sequencer.Container.ParallelContainer"
+  name: nina_status
+  rules:
+  - op: set
+    regex: ".*Sequence run was cancelled.*"
+    value: 0
+  type: gauge
+- labels:
+    category:
+      value: "* Instruction Set *"
+    item:
+      value: "NINA.Sequencer.Container.SequentialContainer"
+  name: nina_status
+  rules:
+  - op: set
+    regex: ".*Sequence run was cancelled.*"
+    value: 0
+  type: gauge
+- labels:
+    category:
+      value: "* Instruction Set *"
+    item:
+      value: "NINA.Sequencer.Container.TargetAreaContainer"
+  name: nina_status
+  rules:
+  - op: set
+    regex: ".*Sequence run was cancelled.*"
+    value: 0
+  type: gauge
+- labels:
+    category:
+      value: "* Instruction Set *"
+    item:
+      value: "NINA.Sequencer.Container.EndAreaContainer"
+  name: nina_status
+  rules:
+  - op: set
+    regex: ".*Sequence run was cancelled.*"
+    value: 0
+  type: gauge
+- labels:
+    category:
+      value: "* Instruction Set *"
+    item:
+      value: "NINA.Sequencer.Container.SequenceRootContainer"
+  name: nina_status
+  rules:
+  - op: set
+    regex: ".*Sequence run was cancelled.*"
+    value: 0
+  type: gauge
+- labels:
+    category:
+      value: "* Instruction Set *"
+    item:
+      value: "NINA.Sequencer.Container.StartAreaContainer"
+  name: nina_status
+  rules:
+  - op: set
+    regex: ".*Sequence run was cancelled.*"
+    value: 0
+  type: gauge
+- labels:
+    category:
+      value: "Camera"
+    item:
+      value: "CoolCamera"
+  name: nina_status
+  rules:
+  - op: set
+    regex: ".*Sequence run was cancelled.*"
+    value: 0
+  type: gauge
+- labels:
+    category:
+      value: "Camera"
+    item:
+      value: "WarnCamera"
+  name: nina_status
+  rules:
+  - op: set
+    regex: ".*Sequence run was cancelled.*"
+    value: 0
+  type: gauge
+- labels:
+    category:
+      value: "Camera"
+    item:
+      value: "TakeExposure"
+  name: nina_status
+  rules:
+  - op: set
+    regex: ".*Sequence run was cancelled.*"
+    value: 0
+  type: gauge
+- labels:
+    category:
+      value: "Camera"
+    item:
+      value: "NINA.Sequence.SequenceItem.Imaging.TakeManyExposures"
+  name: nina_status
+  rules:
+  - op: set
+    regex: ".*Sequence run was cancelled.*"
+    value: 0
+  type: gauge
