@@ -82,7 +82,7 @@ metrics:
   - op: set
     regex: ".*Autofocus notification received - Temperature (.*)$"
   type: gauge
-# Failure to AutoFocus.
+# Failure to AutoFocus.  Metric for error and clear autofocus status.
 # 2021-11-10T04:19:56.3773|WARNING|AutoFocusVM.cs|StartAutoFocus|721|AutoFocus did not complete successfully, so restoring the focuser position to 12561
 # 2021-11-10T04:19:59.9242|ERROR|SequenceItem.cs|Run|222|Category: Focuser, Item: RunAutofocus - 
 # NINA.Core.Model.SequenceEntityFailedException: Sequence entity did not successfully run!
@@ -101,6 +101,17 @@ metrics:
   rules:
   - op: inc
     regex: ".*ERROR.*Category: Focuser, Item: RunAutofocus.*"
+  type: counter
+- labels:
+    category:
+      value: "Focuser"
+    item:
+      value: "RunAutofocus"
+  name: nina_status
+  rules:
+  - op: set
+    regex: ".*ERROR.*Category: Focuser, Item: RunAutofocus.*"
+    value: 0
   type: counter
 # Failure to save image.
 # 2021-08-27T21:44:19.9511|ERROR|SequenceItem.cs|Run|222|Category: Camera, Item: TakeExposure.*
