@@ -37,9 +37,9 @@ metrics:
   type: gauge
 - labels:
     category:
-      regex: ".*(?:Starting|Skipped|Finishing) Category: ([^,]+),.*"
+      regex: ".*(?:Starting|Skipped|Cancelled|Finishing) Category: ([^,]+),.*"
     item:
-      regex: ".*(?:Starting|Skipped|Finishing) Category: [^,]+, Item: ([^,]+)"
+      regex: ".*(?:Starting|Skipped|Cancelled|Finishing) Category: [^,]+, Item: ([^,]+)"
   name: nina_status
   rules:
   - op: set
@@ -48,24 +48,13 @@ metrics:
   type: gauge
 - labels:
     category:
-      regex: ".*(?:Starting|Skipped|Finishing) Category: ([^,]+),.*"
+      regex: ".*(?:Starting|Skipped|Cancelled|Finishing) Category: ([^,]+),.*"
     item:
-      regex: ".*(?:Starting|Skipped|Finishing) Category: [^,]+, Item: ([^,]+)"
+      regex: ".*(?:Starting|Skipped|Cancelled|Finishing) Category: [^,]+, Item: ([^,]+)"
   name: nina_status
   rules:
   - op: set
-    regex: .*[|]Run[|].*Finishing Category.*
-    value: 0
-  type: gauge
-- labels:
-    category:
-      regex: ".*(?:Starting|Skipped|Finishing) Category: ([^,]+),.*"
-    item:
-      regex: ".*(?:Starting|Skipped|Finishing) Category: [^,]+, Item: ([^,]+)"
-  name: nina_status
-  rules:
-  - op: set
-    regex: .*[|]Run[|].*Skipped Category.*
+    regex: .*[|]Run[|].*(?:Skipped|Cancelled|Finishing) Category.*
     value: 0
   type: gauge
 # ZWO focuser sometimes reports 0K temperature (as -273C) and just needs reconnected. 
@@ -146,24 +135,24 @@ metrics:
 # Special cases, Center to clear CenterAndRotate and visa versa
 - labels:
     category:
-      regex: ".*(?:Starting|Finishing) Category: ([^,]+),.*"
+      regex: ".*(?:Starting|Skipped|Cancelled|Finishing) Category: ([^,]+),.*"
     item:
       value: CenterAndRotate
   name: nina_status
   rules:
   - op: set
-    regex: ".*[|]Run[|].*Finishing Category.*Item: Center.*"
+    regex: ".*[|]Run[|].*(?:Skipped|Cancelled|Finishing) Category.*Item: Center.*"
     value: 0
   type: gauge
 - labels:
     category:
-      regex: ".*(?:Starting|Finishing) Category: ([^,]+),.*"
+      regex: ".*(?:Starting|Skipped|Cancelled|Finishing) Category: ([^,]+),.*"
     item:
       value: Center
   name: nina_status
   rules:
   - op: set
-    regex: ".*[|]Run[|].*Finishing Category.*Item: Center.*"
+    regex: ".*[|]Run[|].*(?:Skipped|Cancelled|Finishing) Category.*Item: Center.*"
     value: 0
   type: gauge
 - labels:

@@ -27,8 +27,16 @@ python log-exporter.py --port 8002 --config config\log-exporter-autofocus.yaml -
 python log-exporter.py --port 8003 --config config\log-exporter-nina.yaml --logdir "%UserProfile%\Documents\PHD2" --logfileregex "PHD2_GuideLog.*[0-9]\.txt"
 ```
 
-## Verify
+### NINA Setup
 
+In NINA you need to turn **Debug** logging on to get cancellation and skipped events.  It appears debug isn't verbose but these logs will address if you cancel a sequence run in the middle of something like autofocus or skip camera cooling.
+
+1. start NINA
+2. go to "Options" tag
+3. select "General" tag
+4. under the "General" section, chaneg "Log level" to "Debug"
+
+## Verify
 
 In your favorite browser look at the metrics endpoint.  If it's local, you can use:
 * http://localhost:8001
