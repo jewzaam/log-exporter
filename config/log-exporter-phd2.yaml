@@ -124,6 +124,27 @@ metrics:
   - op: set
     regex: ^[0-9]*,[^,]*,[^,]*,[^,]*,([^,]+),.*
   type: gauge
+- name: phd2_time
+  rules:
+  - op: set
+    regex: ^[0-9]*,([^,]*),.*
+  type: gauge
+- labels:
+    axis:
+      value: x
+  name: phd2_drift_total_abs
+  rules:
+  - op: add
+    regex: ^[0-9]*,[^,]*,[^,]*,[-]*([^,]+),.*
+  type: gauge
+- labels:
+    axis:
+      value: y
+  name: phd2_drift_total_abs
+  rules:
+  - op: add
+    regex: ^[0-9]*,[^,]*,[^,]*,[^,]*,[-]*([^,]+),.*
+  type: gauge
 - labels:
     data:
       value: starmass
