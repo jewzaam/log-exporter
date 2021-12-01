@@ -11,6 +11,10 @@ initialize:
 - metric: nina_status{category="Telescope",item="MeridianFlip"}
   type: gauge
   value: 0
+# init take exposure error count to 0 so that we can get a rate > 0 when value moves to 1
+- metric: nina_error_total{module="Camera",type="TakeExposure",code"Continuing"}
+  type: counter
+  value: 0
 metrics:
 - name: nina_total
   rules:
