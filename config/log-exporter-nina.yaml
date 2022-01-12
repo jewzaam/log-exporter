@@ -106,6 +106,36 @@ metrics:
     regex: ".*ERROR.*Category: Focuser, Item: RunAutofocus.*"
     value: 0
   type: counter
+# meridian flip has different logs for autofocus, key off the following to represent the AF bits of MF
+# 2022-01-10T23:28:28.2394|INFO|MeridianFlipVM.cs|AutoFocus|207|Meridian Flip - Running Autofocus
+# 2022-01-10T23:29:17.7819|INFO|AutoFocusVM.cs|StartAutoFocus|717|AutoFocus completed
+# 2022-01-10T23:29:22.5761|DEBUG|AutoFocusVM.cs|StartAutoFocus|757|AutoFocus cleanup complete
+# 2022-01-10T23:29:22.5869|INFO|MeridianFlipVM.cs|Recenter|254|Meridian Flip - Recenter after meridian flip
+# Note there can be long lag between "complete" and "cleanup" on a non MF AF.
+# Therefore, going to assume on MF recenter we call AF done but not until then.
+# The other logs statements show up for any other AF...
+- labels:
+    category:
+      value: "Focuser"
+    item:
+      value: "RunAutofocus"
+  name: nina_status
+  rules:
+  - op: set
+    regex: ".*INFO[|]MeridianFlip.*Meridian Flip - Running Autofocus.*"
+    value: 1
+  type: counter
+- labels:
+    category:
+      value: "Focuser"
+    item:
+      value: "RunAutofocus"
+  name: nina_status
+  rules:
+  - op: set
+    regex: ".*INFO[|]MeridianFlip.*Meridian Flip - Recenter after meridian flip.*"
+    value: 0
+  type: counter
 # if Polar Alignment errors at all just drop the gauge to 0 
 # 2021-12-09T17:56:42.8103|ERROR|SequenceItem.cs|Run|222|Category: Polar Alignment, Item: PolarAlignment, Rate: 9, Distance: 40 - 
 # nina_status{camera="ZWO ASI2600MM Pro #1", category="Polar Alignment", host="z73", instance="localhost:8002", item="PolarAlignment", job="prometheus"}
