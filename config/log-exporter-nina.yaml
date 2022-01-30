@@ -164,6 +164,24 @@ metrics:
   - op: inc
     regex: ".*ERROR.*Category: Camera, Item: TakeExposure.*"
   type: counter
+# This is bad, could mean scope tries to rotate completely around the mount!
+# 2022-01-29T21:19:09.6883|INFO|AscomDevice.cs|GetProperty|293|Property ITelescopeFacadeProxy.SideOfPier GET is not implemented in this driver (Device Hub Telescope)
+# 2022-01-29T21:19:09.6883|DEBUG|MeridianFlip.cs|TimeToMeridianFlip|61|UseSideOfPier is enabled but pier side is Unknown - ignoring pierside to calculate time to meridian
+# 2022-01-29T21:19:09.6883|DEBUG|MeridianFlip.cs|TimeToMeridianFlip|61|UseSideOfPier is enabled but pier side is Unknown - ignoring pierside to calculate time to meridian
+# 2022-01-29T21:19:11.6888|DEBUG|MeridianFlip.cs|TimeToMeridianFlip|61|UseSideOfPier is enabled but pier side is Unknown - ignoring pierside to calculate time to meridian
+# We should catch this by tracking ASCOM properties, but apparently it's possible for NINA to loose it's mind.
+- labels:
+    module:
+      value: "Telescope"
+    type:
+      value: "SideOfPier"
+    code:
+      value: "Ignoring"
+  name: nina_error
+  rules:
+  - op: inc
+    regex: ".*UseSideOfPier is enabled but pier side is Unknown - ignoring pierside.*"
+  type: counter
 # Clear metrics like TakeExposure when interrupted
 # 2021-10-21T06:04:23.5454|INFO|SunAltitudeCondition.cs|InterruptWhenSunOutsideOfBounds|58|Sun is outside of the specified range - Interrupting current Instruction Set
 # 2021-10-21T02:35:04.5480|INFO|LoopWhileNextTargetBelowAltitude.cs|InterruptWhenTargetBelowAltitude|48|Next Target is above altitude - Interrupting current Instruction Set
