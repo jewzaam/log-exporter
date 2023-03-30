@@ -3,10 +3,7 @@ import re
 import copy
 import yaml
 
-import httpimport
-
-with httpimport.github_repo('jewzaam', 'metrics-utility', 'utility', 'main'):
-    import utility
+import utility
 
 """
     "common_labels": {
