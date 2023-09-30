@@ -451,3 +451,15 @@ metrics:
     regex: ".*Sequence run was cancelled.*"
     value: 0
   type: gauge
+# Reset MF gauge to 0 if we start guiding.  Will happen if MF had to be canceled mid-sequence.
+- labels:
+    category:
+      value: "Telescope"
+    item:
+      value: "MeridianFlip"
+  name: nina_status
+  rules:
+  - op: set
+    regex: ".*Starting Category: Guider, Item: StartGuiding.*"
+    value: 0
+  type: gauge
