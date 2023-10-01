@@ -39,26 +39,27 @@ metrics:
     regex: .*[|]Disconnected .*
     value: 0
   type: gauge
+# logs might have "Item" (older key) or "Container" (newer key). sigh.
 - labels:
     category:
       regex: ".*(?:Starting|Skipped|Cancelled|Finishing) Category: ([^,]+),.*"
     item:
-      regex: ".*(?:Starting|Skipped|Cancelled|Finishing) Category: [^,]+, Item: ([^,]+)"
+      regex: ".*(?:Starting|Skipped|Cancelled|Finishing) Category: [^,]+, (?:Container|Item): ([^,]+)"
   name: nina_status
   rules:
   - op: set
-    regex: .*[|]Run[|].*Starting Category.*
+    regex: ".*[|]Run[|].*Starting Category.*"
     value: 1
   type: gauge
 - labels:
     category:
       regex: ".*(?:Starting|Skipped|Cancelled|Finishing) Category: ([^,]+),.*"
     item:
-      regex: ".*(?:Starting|Skipped|Cancelled|Finishing) Category: [^,]+, Item: ([^,]+)"
+      regex: ".*(?:Starting|Skipped|Cancelled|Finishing) Category: [^,]+, (?:Container|Item): ([^,]+)"
   name: nina_status
   rules:
   - op: set
-    regex: .*[|]Run[|].*(?:Skipped|Cancelled|Finishing) Category.*
+    regex: ".*[|]Run[|].*(?:Skipped|Cancelled|Finishing) Category.*"
     value: 0
   type: gauge
 # ZWO focuser sometimes reports 0K temperature (as -273C) and just needs reconnected. 
