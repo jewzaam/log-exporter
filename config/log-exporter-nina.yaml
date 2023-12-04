@@ -240,6 +240,14 @@ metrics:
   type: counter
 - labels:
     type:
+      value: TEMP
+  name: nina_detect
+  rules:
+  - op: set
+    regex: ".*[|]FinalizeSave[|].*TEMP_([^_]*).*\\.fits.*"
+  type: gauge
+- labels:
+    type:
       value: HFR
   name: nina_detect
   rules:
