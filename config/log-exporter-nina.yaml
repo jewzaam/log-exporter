@@ -260,7 +260,7 @@ metrics:
   name: nina_detect
   rules:
   - op: set
-    regex: .*[|]Detect[|].*Detected Stars ([0-9]+)$
+    regex: .*[|]Detect[|].*Detected Stars ([0-9]+),
   type: gauge
 - labels:
     type:
