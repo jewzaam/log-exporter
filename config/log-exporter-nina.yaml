@@ -56,6 +56,16 @@ metrics:
       regex: ".*(?:Starting|Skipped|Cancelled|Finishing) Category: ([^,]+),.*"
     item:
       regex: ".*(?:Starting|Skipped|Cancelled|Finishing) Category: [^,]+, (?:Container|Item): ([^,]+)"
+  name: nina_status_count
+  rules:
+  - op: inc
+    regex: ".*[|]Run[|].*(?:Starting|Skipped|Cancelled|Finishing) Category.*"
+  type: counter
+- labels:
+    category:
+      regex: ".*(?:Starting|Skipped|Cancelled|Finishing) Category: ([^,]+),.*"
+    item:
+      regex: ".*(?:Starting|Skipped|Cancelled|Finishing) Category: [^,]+, (?:Container|Item): ([^,]+)"
   name: nina_status
   rules:
   - op: set
@@ -125,6 +135,16 @@ metrics:
   - op: set
     regex: ".*INFO[|]MeridianFlip.*Meridian Flip - Running Autofocus.*"
     value: 1
+  type: gauge
+- labels:
+    category:
+      value: "Focuser"
+    item:
+      value: "RunAutofocus"
+  name: nina_status_count
+  rules:
+  - op: inc
+    regex: ".*INFO[|]MeridianFlip.*Meridian Flip - Running Autofocus.*"
   type: counter
 - labels:
     category:
@@ -136,7 +156,7 @@ metrics:
   - op: set
     regex: ".*INFO[|]MeridianFlip.*Meridian Flip - Recenter after meridian flip.*"
     value: 0
-  type: counter
+  type: gauge
 # if Polar Alignment errors at all just drop the gauge to 0 
 # 2021-12-09T17:56:42.8103|ERROR|SequenceItem.cs|Run|222|Category: Polar Alignment, Item: PolarAlignment, Rate: 9, Distance: 40 - 
 # nina_status{camera="ZWO ASI2600MM Pro #1", category="Polar Alignment", host="z73", instance="localhost:8002", item="PolarAlignment", job="prometheus"}
@@ -281,6 +301,16 @@ metrics:
     regex: ".*Meridian Flip - Initializing Meridian Flip.*"
     value: 1
   type: gauge
+- labels:
+    category:
+      value: "Telescope"
+    item:
+      value: "MeridianFlip"
+  name: nina_status_count
+  rules:
+  - op: inc
+    regex: ".*Meridian Flip - Initializing Meridian Flip.*"
+  type: counter
 - labels:
     category:
       value: "Telescope"
