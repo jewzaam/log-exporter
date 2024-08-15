@@ -219,6 +219,19 @@ metrics:
     regex: ".*InterruptWhen.*"
     value: 0
   type: gauge
+# Clear center metric when fails
+# 2024-01-21T23:36:33.6374|ERROR|SequenceItem.cs|RunErrorBehavior|193|Instruction Center failed after 1 attempt. Error behavior is set to ContinueOnError. Continuing.
+- labels:
+    category:
+      value: "Scheduler"
+    item:
+      value: "Center"
+  name: nina_status
+  rules:
+  - op: set
+    regex: ".*ERROR.*Instruction Center failed.*"
+    value: 0
+  type: gauge
 # Special cases, Center to clear CenterAndRotate and visa versa
 - labels:
     category:
@@ -264,7 +277,7 @@ metrics:
   name: nina_detect
   rules:
   - op: set
-    regex: ".*[|]FinalizeSave[|].*TEMP_([^_]*).*\\.fits.*"
+    regex: ".*[|]ImageSaveController[|].*TEMP_([^_]*).*\\.fits.*"
   type: gauge
 - labels:
     type:
@@ -288,7 +301,7 @@ metrics:
   name: nina_detect
   rules:
   - op: set
-    regex: ".*[|]FinalizeSave[|].*RMS[A-Z]*_([0-9.]+)_.*"
+    regex: ".*[|]ImageSaveController[|].*RMS[A-Z]*_([0-9.]+)_.*"
   type: gauge
 - labels:
     category:
