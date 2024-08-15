@@ -277,7 +277,7 @@ metrics:
   name: nina_detect
   rules:
   - op: set
-    regex: ".*[|]ImageSaveController[|].*TEMP_([^_]*).*\\.fits.*"
+    regex: ".*[|]ImageSaveController.cs[|].*TEMP_([^_]*).*\\.fits.*"
   type: gauge
 - labels:
     type:
@@ -301,7 +301,7 @@ metrics:
   name: nina_detect
   rules:
   - op: set
-    regex: ".*[|]ImageSaveController[|].*RMS[A-Z]*_([0-9.]+)_.*"
+    regex: ".*[|]ImageSaveController.cs[|].*RMS[A-Z]*_([0-9.]+)_.*"
   type: gauge
 - labels:
     category:
