@@ -373,7 +373,29 @@ metrics:
   type: gauge
 - labels:
     category:
+      value: "Scheduler"
+    item:
+      value: "Center"
+  name: nina_status
+  rules:
+  - op: set
+    regex: ".*Sequence run was cancelled.*"
+    value: 0
+  type: gauge
+- labels:
+    category:
       value: "* Instruction Set *"
+    item:
+      value: "CenterAndRotate"
+  name: nina_status
+  rules:
+  - op: set
+    regex: ".*Sequence run was cancelled.*"
+    value: 0
+  type: gauge
+- labels:
+    category:
+      value: "Scheduler"
     item:
       value: "CenterAndRotate"
   name: nina_status
