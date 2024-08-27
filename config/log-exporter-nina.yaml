@@ -359,6 +359,40 @@ metrics:
   - op: inc
     regex: .*[|]ERROR[|].*
   type: counter
+# clear centering gauges when Starting Exposure
+- labels:
+    category:
+      value: "* Instruction Set *"
+    item:
+      value: "Center"
+  name: nina_status
+  rules:
+  - op: set
+    regex: .*[|]Capture[|].*Starting Exposure.*
+    value: 0
+  type: gauge
+- labels:
+    category:
+      value: "Scheduler"
+    item:
+      value: "Center"
+  name: nina_status
+  rules:
+  - op: set
+    regex: .*[|]Capture[|].*Starting Exposure.*
+    value: 0
+  type: gauge
+- labels:
+    category:
+      value: "* Instruction Set *"
+    item:
+      value: "CenterAndRotate"
+  name: nina_status
+  rules:
+  - op: set
+    regex: .*[|]Capture[|].*Starting Exposure.*
+    value: 0
+  type: gauge
 # clear status gauges of importance when sequence is cancelled
 - labels:
     category:
