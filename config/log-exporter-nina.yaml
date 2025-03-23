@@ -271,6 +271,12 @@ metrics:
   - op: inc
     regex: .*[|]Capture[|].*Starting Exposure.*
   type: counter
+# 2025-03-23T19:41:01.4946|INFO|FilterWheelVM.cs|ChangeFilter|112|Moving to Filter R at Position 1
+- name: nina_filter
+  rules:
+  - op: set
+    regex: ".*[|]FilterWheelVM.cs[|]ChangeFilter[|].*Position ([0-9]*).*"
+  type: gauge
 # 2024-09-22T02:29:29.4939|INFO|ImageSaveController.cs|DoWork|97|Successfully saved file at C:\Users\jewzaam-glarf\Dropbox\Family Room\Astrophotography\RAW\DARK\C8E+ZWO ASI2600MM Pro\DATE_2024-09-21\FILTER_H_EXP_420.00_SETTEMP_-5.00\2024-09-22_02-22-27_HFR__STARS__RMSAC_0.00_TEMP_-4.90.fits. Duration Total: 00:00:01.2895001; BeforeSave: 00:00:00.0001875; BeforeFinalizeImageSaved: 00:00:00.6696350; FinalizeSaveTime: 00:00:00.6196773
 # 2024-09-21T21:13:40.0912|INFO|BaseImageData.cs|SaveToDisk|344|Saved image to C:\Users\jewzaam-glarf\Dropbox\Family Room\Astrophotography\RAW\BIAS\C8E+ZWO ASI2600MM Pro\DATE_2024-09-21\FILTER_H_EXP_0.00_SETTEMP_-5.00\2024-09-21_21-13-33_HFR__STARS__RMSAC_0.00_TEMP_-4.10(1).fits
 - labels:
