@@ -103,10 +103,12 @@ def callback(filename, data):
                         rule['cached_value'] = value
                     else:
                         #print("{}({}, {}, {})".format(op,name,value,labelsDict))
-                        if op == 'add':
+                        #print("rule: {}".format(rule))
+                        #print("data: {}".format(data))
+                        if op == 'add' and value:
                             # gauge
                             utility.add(name, float(value), labelsDict)
-                        if op == 'set':
+                        if op == 'set' and value:
                             # gauge
                             utility.set(name, float(value), labelsDict)
                         if op == 'inc':
