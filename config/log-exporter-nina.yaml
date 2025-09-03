@@ -52,6 +52,9 @@ metrics:
   - op: set
     regex: ".*[|]Run[|].*Starting Category.*"
     value: 1
+  - op: set
+    regex: ".*[|]Run[|].*(?:Skipped|Cancelled|Finishing) Category.*"
+    value: 0
   type: gauge
 - labels:
     category:
@@ -63,17 +66,6 @@ metrics:
   - op: inc
     regex: ".*[|]Run[|].*(?:Starting|Skipped|Cancelled|Finishing) Category.*"
   type: counter
-- labels:
-    category:
-      regex: ".*(?:Starting|Skipped|Cancelled|Finishing) Category: ([^,]+),.*"
-    item:
-      regex: ".*(?:Starting|Skipped|Cancelled|Finishing) Category: [^,]+, (?:Container|Item): ([^,]+)"
-  name: nina_status
-  rules:
-  - op: set
-    regex: ".*[|]Run[|].*(?:Skipped|Cancelled|Finishing) Category.*"
-    value: 0
-  type: gauge
 # ZWO focuser sometimes reports 0K temperature (as -273C) and just needs reconnected. 
 # If noticed after sequence starts it will trigger autofocus based on temperature which is just a chunk of time lost.
 # Worst case it's missed AND FOCUS NEVER HAPPENS.

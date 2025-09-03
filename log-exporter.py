@@ -105,10 +105,10 @@ def callback(filename, data):
                         #print("{}({}, {}, {})".format(op,name,value,labelsDict))
                         #print("rule: {}".format(rule))
                         #print("data: {}".format(data))
-                        if op == 'add' and value:
+                        if op == 'add' and value is not None:
                             # gauge
                             utility.add(name, float(value), labelsDict)
-                        if op == 'set' and value:
+                        if op == 'set' and value is not None:
                             # gauge
                             utility.set(name, float(value), labelsDict)
                         if op == 'inc':
