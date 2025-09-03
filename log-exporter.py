@@ -22,7 +22,7 @@ import utility
                     "regex": # regex with one match
                     "value": # static value
                 },
-            ],
+            },
             "rules": {
                 "regex": # regex with one match
                 "op":    # set, add, subtract, increment, decrement
@@ -61,9 +61,12 @@ def callback(filename, data):
             for key in metric['labels'].keys():
                 label = metric['labels'][key]
                 if 'regex' in label:
-                    m = re.match(label['regex'], data)
-                    if m is not None and m.groups() is not None and len(m.groups())>0 and m.groups()[0] is not None:
-                        label['value'] = m.groups()[0].strip()
+                    regexes = label['regex'] if isinstance(label['regex'], list) else [label['regex']]
+                    for regex in regexes:
+                        m = re.match(regex, data)
+                        if m is not None and m.groups() is not None and len(m.groups()) > 0 and m.groups()[0] is not None:
+                            label['value'] = m.groups()[0].strip()
+                            break
                 if labelsDict is not None and 'value' in label:
                     labelsDict[key] = label['value']
                 else:
@@ -78,12 +81,15 @@ def callback(filename, data):
                     value = rule['value']
                 matched = False
                 if 'regex' in rule:
-                    m = re.match(rule['regex'], data)
-                    if m is not None:
-                        # update value only if it's not set in config (hard coded)
-                        matched = True
-                        if value is None and m.groups() is not None and len(m.groups())>0 and m.groups()[0] is not None:
-                            value = m.groups()[0].strip()
+                    regexes = rule['regex'] if isinstance(rule['regex'], list) else [rule['regex']]
+                    for regex in regexes:
+                        m = re.match(regex, data)
+                        if m is not None:
+                            # update value only if it's not set in config (hard coded)
+                            matched = True
+                            if value is None and m.groups() is not None and len(m.groups()) > 0 and m.groups()[0] is not None:
+                                value = m.groups()[0].strip()
+                            break
 
                 # load cached value if we didn't find a match
                 cached_value = None

@@ -1,8 +1,8 @@
 common_labels:
   camera:
-    regex: ".*Successfully connected Camera. Id: (.+) Name:.*"
-  camera:
-    regex: ".*Camera = (.+)"
+    regex: 
+      - ".*Successfully connected Camera. Id: .+ Name: (.+) DisplayName:.*"
+      - ".*Camera = (.+)"
 initialize:
 - metric: nina_status{category="Utility",item="MessageBox"}
   type: gauge
