@@ -4,6 +4,7 @@ import copy
 import yaml
 
 import utility
+import metrics_utility
 
 """
     "common_labels": {
@@ -113,16 +114,16 @@ def callback(filename, data):
                         #print("data: {}".format(data))
                         if op == 'add' and value is not None:
                             # gauge
-                            utility.add(name, float(value), labelsDict)
+                            metrics_utility.add(name, float(value), labelsDict)
                         if op == 'set' and value is not None:
                             # gauge
-                            utility.set(name, float(value), labelsDict)
+                            metrics_utility.set(name, float(value), labelsDict)
                         if op == 'inc':
                             # counter
-                            utility.inc(name, labelsDict)
+                            metrics_utility.inc(name, labelsDict)
                         if op == 'dec':
                             # counter
-                            utility.dec(name, labelsDict)
+                            metrics_utility.dec(name, labelsDict)
                         
                         # wipe cached value if we have one
                         if 'cached_value' in rule:
@@ -138,7 +139,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     
     # Start up the server to expose the metrics.
-    utility.metrics(args.port)
+    metrics_utility.metrics(args.port)
 
     # load configuration
     with open(args.config, 'r') as f:
