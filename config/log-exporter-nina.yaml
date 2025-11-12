@@ -271,6 +271,37 @@ metrics:
   - op: set
     regex: ".*[|]FilterWheelVM.cs[|]ChangeFilter[|].*Position ([0-9]*).*"
   type: gauge
+# 2025-09-20T00:02:01.1977|INFO|SequenceItem.cs|Run|208|Starting Category: Scheduler, Item: SwitchFilter, Filter: L
+- labels:
+    filter_name:
+      regex: ".*[|]SequenceItem.cs[|]Run[|].*Starting Category: Scheduler, Item: SwitchFilter, Filter: ([^\\s]+).*"
+  name: nina_filter_current
+  rules:
+  - op: set
+    regex: ".*[|]SequenceItem.cs[|]Run[|].*Starting Category: Scheduler, Item: SwitchFilter, Filter: L.*"
+    value: 1
+  - op: set
+    regex: ".*[|]SequenceItem.cs[|]Run[|].*Starting Category: Scheduler, Item: SwitchFilter, Filter: R.*"
+    value: 2
+  - op: set
+    regex: ".*[|]SequenceItem.cs[|]Run[|].*Starting Category: Scheduler, Item: SwitchFilter, Filter: G.*"
+    value: 3
+  - op: set
+    regex: ".*[|]SequenceItem.cs[|]Run[|].*Starting Category: Scheduler, Item: SwitchFilter, Filter: B.*"
+    value: 4
+  - op: set
+    regex: ".*[|]SequenceItem.cs[|]Run[|].*Starting Category: Scheduler, Item: SwitchFilter, Filter: S.*"
+    value: 5
+  - op: set
+    regex: ".*[|]SequenceItem.cs[|]Run[|].*Starting Category: Scheduler, Item: SwitchFilter, Filter: H.*"
+    value: 6
+  - op: set
+    regex: ".*[|]SequenceItem.cs[|]Run[|].*Starting Category: Scheduler, Item: SwitchFilter, Filter: O.*"
+    value: 7
+  - op: set
+    regex: ".*[|]SequenceItem.cs[|]Run[|].*Starting Category: Scheduler, Item: SwitchFilter, Filter: BLANK.*"
+    value: 8
+  type: gauge
 # 2024-09-22T02:29:29.4939|INFO|ImageSaveController.cs|DoWork|97|Successfully saved file at C:\Users\jewzaam-glarf\Dropbox\Family Room\Astrophotography\RAW\DARK\C8E+ZWO ASI2600MM Pro\DATE_2024-09-21\FILTER_H_EXP_420.00_SETTEMP_-5.00\2024-09-22_02-22-27_HFR__STARS__RMSAC_0.00_TEMP_-4.90.fits. Duration Total: 00:00:01.2895001; BeforeSave: 00:00:00.0001875; BeforeFinalizeImageSaved: 00:00:00.6696350; FinalizeSaveTime: 00:00:00.6196773
 # 2024-09-21T21:13:40.0912|INFO|BaseImageData.cs|SaveToDisk|344|Saved image to C:\Users\jewzaam-glarf\Dropbox\Family Room\Astrophotography\RAW\BIAS\C8E+ZWO ASI2600MM Pro\DATE_2024-09-21\FILTER_H_EXP_0.00_SETTEMP_-5.00\2024-09-21_21-13-33_HFR__STARS__RMSAC_0.00_TEMP_-4.10(1).fits
 - labels:
@@ -568,6 +599,29 @@ metrics:
       value: "Telescope"
     item:
       value: "MeridianFlip"
+  name: nina_status
+  rules:
+  - op: set
+    regex: ".*Starting Category: Guider, Item: StartGuiding.*"
+    value: 0
+  type: gauge
+# Reset CenterAndRotate gauge to 0 if we start guiding.  Will happen if CenterAndRotate sequence terminated without Finishing log entry.
+- labels:
+    category:
+      value: "Scheduler"
+    item:
+      value: "CenterAndRotate"
+  name: nina_status
+  rules:
+  - op: set
+    regex: ".*Starting Category: Guider, Item: StartGuiding.*"
+    value: 0
+  type: gauge
+- labels:
+    category:
+      value: "* Instruction Set *"
+    item:
+      value: "CenterAndRotate"
   name: nina_status
   rules:
   - op: set
